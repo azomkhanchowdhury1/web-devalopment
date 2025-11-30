@@ -19,13 +19,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.vercel.app']
 
-ALLOWED_HOSTS = [
-    'web-devalopment-2.onrender.com',
-    'localhost',
-    '127.0.0.1'
-]
-
-
+ALLOWED_HOSTS = ['*']
 
 
 CSRF_TRUSTED_ORIGINS = [
