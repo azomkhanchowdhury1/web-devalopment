@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থী পরিসংখ্যান</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+            শিক্ষার্থী তালিকায় ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ total_students }}</h4>
+                        <p>মোট শিক্ষার্থী</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ active_students }}</h4>
+                        <p>সক্রিয় শিক্ষার্থী</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-user-check fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ male_students }}</h4>
+                        <p>ছাত্র</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-male fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ female_students }}</h4>
+                        <p>ছাত্রী</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-female fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">শ্রেণী অনুযায়ী শিক্ষার্থী</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>শ্রেণী</th>
+                                <th>শিক্ষার্থী সংখ্যা</th>
+                                <th>শতকরা</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grade in grade_stats %}
+                            <tr>
+                                <td>{{ grade.grade }}</td>
+                                <td>{{ grade.count }}</td>
+                                <td>{{ grade.percentage|floatformat:1 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">বিভাগ অনুযায়ী শিক্ষার্থী</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>বিভাগ</th>
+                                <th>শিক্ষার্থী সংখ্যা</th>
+                                <th>শতকরা</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for section in section_stats %}
+                            <tr>
+                                <td>{{ section.section }}</td>
+                                <td>{{ section.count }}</td>
+                                <td>{{ section.percentage|floatformat:1 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">রক্তের গ্রুপ অনুযায়ী শিক্ষার্থী</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>রক্তের গ্রুপ</th>
+                                <th>শিক্ষার্থী সংখ্যা</th>
+                                <th>শতকরা</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for blood_group in blood_group_stats %}
+                            <tr>
+                                <td>{{ blood_group.blood_group }}</td>
+                                <td>{{ blood_group.count }}</td>
+                                <td>{{ blood_group.percentage|floatformat:1 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">অবস্থা অনুযায়ী শিক্ষার্থী</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>অবস্থা</th>
+                                <th>শিক্ষার্থী সংখ্যা</th>
+                                <th>শতকরা</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for status in status_stats %}
+                            <tr>
+                                <td>{{ status.status }}</td>
+                                <td>{{ status.count }}</td>
+                                <td>{{ status.percentage|floatformat:1 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">মাসিক ভর্তি পরিসংখ্যান ({{ current_year }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>মাস</th>
+                        <th>ভর্তি সংখ্যা</th>
+                        <th>প্রবৃদ্ধি</th>
+                        <th>গ্রাফ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in monthly_admissions %}
+                    <tr>
+                        <td>{{ month.month }}</td>
+                        <td>{{ month.count }}</td>
+                        <td>
+                            {% if month.growth > 0 %}
+                            <span class="text-success">+{{ month.growth }}%</span>
+                            {% elif month.growth < 0 %} <span class="text-danger">{{ month.growth }}%</span>
+                                {% else %}
+                                <span class="text-muted">{{ month.growth }}%</span>
+                                {% endif %}
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar" role="progressbar" style="width: {{ month.percentage }}%">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

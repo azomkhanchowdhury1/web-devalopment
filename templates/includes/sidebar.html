@@ -1,0 +1,113 @@
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+            href="{% url 'dashboard' %}">
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Dashboard
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'student' in request.path %}active{% endif %}"
+            href="{% url 'students:student_list' %}">
+            <i class="fas fa-users me-2"></i>
+            Students
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'teacher' in request.path %}active{% endif %}" href="{% url 'teacher_list' %}">
+            <i class="fas fa-chalkboard-teacher me-2"></i>
+            Teachers
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'classes' in request.path %}active{% endif %}" href="{% url 'academic:class_list' %}">
+            <i class="fas fa-school me-2"></i>
+            Classes
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'attendance' in request.path %}active{% endif %}"
+            href="{% url 'attendance:attendance_list' %}">
+            <i class="fas fa-clipboard-check me-2"></i>
+            Attendance
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'result' in request.path %}active{% endif %}" href="{% url 'result_list' %}">
+            <i class="fas fa-chart-line me-2"></i>
+            Results
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'routine' in request.path %}active{% endif %}"
+            href="{% url 'academic:routine_list' %}">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Schedule
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if 'subject' in request.path %}active{% endif %}"
+            href="{% url 'academic:subject_list' %}">
+            <i class="fas fa-book me-2"></i>
+            Subjects
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+            href="{% url 'profile' %}">
+            <i class="fas fa-user me-2"></i>
+            Profile
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-cog me-2"></i>
+            Settings
+        </a>
+    </li>
+</ul>
+
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link active" href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'students:student_list' %}">
+            Students
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'teacher_list' %}">
+            Teachers
+        </a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="academicDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Academic
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="academicDropdown">
+            <li><a class="dropdown-item" href="{% url 'academic:academic_year_list' %}">Academic Years</a></li>
+            <li><a class="dropdown-item" href="{% url 'academic:class_list' %}">Classes</a></li>
+            <li><a class="dropdown-item" href="{% url 'academic:subject_list' %}">Subjects</a></li>
+            <li><a class="dropdown-item" href="{% url 'academic:routine_list' %}">Class Routine</a></li>
+        </ul>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'attendance:attendance_list' %}">
+            Attendance
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            Exams
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'result_list' %}">
+            Results
+        </a>
+    </li>
+</ul>

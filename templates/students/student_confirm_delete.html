@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থী মুছুন</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+            তালিকায় ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">সতর্কতা!</h4>
+            <p>আপনি কি নিশ্চিত যে আপনি এই শিক্ষার্থীকে মুছতে চান?</p>
+            <hr>
+            <p class="mb-0"><strong>শিক্ষার্থী:</strong> {{ student.first_name }} {{ student.last_name }} (রোল: {{
+                student.roll_number }})</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-danger">হ্যাঁ, মুছুন</button>
+                <a href="{% url 'students:student_list' %}" class="btn btn-secondary">না, ফিরে যান</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

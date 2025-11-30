@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">নথি যোগ করুন</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_detail' student.id %}" class="btn btn-sm btn-outline-secondary">
+            শিক্ষার্থীর বিস্তারিত দেখুন
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-info mb-4" role="alert">
+            <h5 class="alert-heading">শিক্ষার্থী: {{ student.first_name }} {{ student.last_name }}</h5>
+            <p class="mb-0">রোল নং: {{ student.roll_number }} | শ্রেণী: {{ student.grade }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.document_type.id_for_label }}" class="form-label">নথির ধরন</label>
+                        {{ form.document_type }}
+                        {% if form.document_type.errors %}
+                        <div class="text-danger">{{ form.document_type.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">শিরোনাম</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div class="text-danger">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.issue_date.id_for_label }}" class="form-label">ইস্যুর তারিখ</label>
+                        {{ form.issue_date }}
+                        {% if form.issue_date.errors %}
+                        <div class="text-danger">{{ form.issue_date.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.expiry_date.id_for_label }}" class="form-label">মেয়াদ উত্তীর্ণের তারিখ (যদি
+                            থাকে)</label>
+                        {{ form.expiry_date }}
+                        {% if form.expiry_date.errors %}
+                        <div class="text-danger">{{ form.expiry_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.file.id_for_label }}" class="form-label">ফাইল</label>
+                {{ form.file }}
+                {% if form.file.errors %}
+                <div class="text-danger">{{ form.file.errors }}</div>
+                {% endif %}
+                <div class="form-text">সর্বোচ্চ ফাইলের আকার: 10MB। অনুমোদিত ফরম্যাট: PDF, JPG, PNG, DOC, DOCX</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">বর্ণনা</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">নথি সংরক্ষণ করুন</button>
+                <a href="{% url 'students:student_detail' student.id %}" class="btn btn-secondary">বাতিল করুন</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // তারিখ ফিল্ডে তারিখ পিকার যোগ করুন
+        const dateFields = document.querySelectorAll('input[type="date"]');
+        dateFields.forEach(field => {
+            field.classList.add('form-control');
+        });
+
+        // অন্যান্য ফিল্ডে ফর্ম কন্ট্রোল ক্লাস যোগ করুন
+        const formControls = document.querySelectorAll('select, input[type="text"], input[type="file"], textarea');
+        formControls.forEach(control => {
+            control.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

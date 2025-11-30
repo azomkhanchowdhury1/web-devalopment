@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">নতুন শিক্ষক যোগ করুন</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'teacher_list' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">পুরো নাম</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">ইমেইল</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">ফোন নম্বর</label>
+                            <input type="text" class="form-control" id="phone" name="phone" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="subject" class="form-label">বিষয়</label>
+                            <select class="form-select" id="subject" name="subject" required>
+                                <option value="" selected disabled>বিষয় নির্বাচন করুন</option>
+                                <option value="bangla">বাংলা</option>
+                                <option value="english">ইংরেজি</option>
+                                <option value="math">গণিত</option>
+                                <option value="science">বিজ্ঞান</option>
+                                <option value="social_science">সামাজিক বিজ্ঞান</option>
+                                <option value="religion">ধর্ম</option>
+                                <option value="ict">তথ্য ও যোগাযোগ প্রযুক্তি</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="joining_date" class="form-label">যোগদানের তারিখ</label>
+                            <input type="date" class="form-control" id="joining_date" name="joining_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="salary" class="form-label">বেতন</label>
+                            <input type="number" class="form-control" id="salary" name="salary" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="address" class="form-label">ঠিকানা</label>
+                            <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="photo" class="form-label">ছবি</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="qualification" class="form-label">শিক্ষাগত যোগ্যতা</label>
+                            <textarea class="form-control" id="qualification" name="qualification" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="experience" class="form-label">অভিজ্ঞতা (বছর)</label>
+                            <input type="number" class="form-control" id="experience" name="experience" min="0" step="0.1">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" checked>
+                        <label class="form-check-label" for="is_active">সক্রিয়</label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">সংরক্ষণ করুন</button>
+                        <a href="{% url 'teacher_list' %}" class="btn btn-secondary">বাতিল করুন</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

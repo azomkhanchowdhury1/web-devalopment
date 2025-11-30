@@ -1,0 +1,7 @@
+django
+python-decouple
+django-jazzmin
+django-crispy-forms
+crispy-bootstrap5
+Pillow
+pandas

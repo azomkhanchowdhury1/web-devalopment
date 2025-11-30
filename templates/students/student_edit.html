@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থী সম্পাদনা</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_detail' student.id %}" class="btn btn-sm btn-outline-primary me-2">
+            বিস্তারিত দেখুন
+        </a>
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+            তালিকায় ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">ব্যক্তিগত তথ্য</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">প্রথম নাম</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="text-danger">{{ form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">শেষ নাম</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="text-danger">{{ form.last_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.roll_number.id_for_label }}" class="form-label">রোল নং</label>
+                        {{ form.roll_number }}
+                        {% if form.roll_number.errors %}
+                        <div class="text-danger">{{ form.roll_number.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">জন্ম তারিখ</label>
+                            {{ form.date_of_birth }}
+                            {% if form.date_of_birth.errors %}
+                            <div class="text-danger">{{ form.date_of_birth.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.gender.id_for_label }}" class="form-label">লিঙ্গ</label>
+                            {{ form.gender }}
+                            {% if form.gender.errors %}
+                            <div class="text-danger">{{ form.gender.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.blood_group.id_for_label }}" class="form-label">রক্তের গ্রুপ</label>
+                            {{ form.blood_group }}
+                            {% if form.blood_group.errors %}
+                            <div class="text-danger">{{ form.blood_group.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.photo.id_for_label }}" class="form-label">ছবি</label>
+                            {{ form.photo }}
+                            {% if form.photo.errors %}
+                            <div class="text-danger">{{ form.photo.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="mb-3">শিক্ষাগত তথ্য</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.grade.id_for_label }}" class="form-label">শ্রেণী</label>
+                            {{ form.grade }}
+                            {% if form.grade.errors %}
+                            <div class="text-danger">{{ form.grade.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.section.id_for_label }}" class="form-label">বিভাগ</label>
+                            {{ form.section }}
+                            {% if form.section.errors %}
+                            <div class="text-danger">{{ form.section.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.admission_date.id_for_label }}" class="form-label">ভর্তির তারিখ</label>
+                        {{ form.admission_date }}
+                        {% if form.admission_date.errors %}
+                        <div class="text-danger">{{ form.admission_date.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">অবস্থা</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                        <div class="text-danger">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="mb-3">যোগাযোগের তথ্য</h5>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.address.id_for_label }}" class="form-label">ঠিকানা</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                        <div class="text-danger">{{ form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.district.id_for_label }}" class="form-label">জেলা</label>
+                        {{ form.district }}
+                        {% if form.district.errors %}
+                        <div class="text-danger">{{ form.district.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">ফোন</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                        <div class="text-danger">{{ form.phone.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">ইমেইল</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="text-danger">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">আপডেট করুন</button>
+                <a href="{% url 'students:student_detail' student.id %}" class="btn btn-secondary">বাতিল করুন</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // তারিখ ফিল্ডে তারিখ পিকার যোগ করুন
+        const dateFields = document.querySelectorAll('input[type="date"]');
+        dateFields.forEach(field => {
+            field.classList.add('form-control');
+        });
+
+        // অন্যান্য ফিল্ডে ফর্ম কন্ট্রোল ক্লাস যোগ করুন
+        const formControls = document.querySelectorAll('select, input[type="text"], input[type="email"], input[type="number"]');
+        formControls.forEach(control => {
+            control.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

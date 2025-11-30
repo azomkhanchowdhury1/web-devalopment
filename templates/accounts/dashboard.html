@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Students</h4>
+                        <h2 class="mb-0">{{ user_stats.total_students }}</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Teachers</h4>
+                        <h2 class="mb-0">{{ user_stats.total_teachers }}</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Classes</h4>
+                        <h2 class="mb-0">{{ user_stats.total_classes }}</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-school fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Attendance</h4>
+                        <h2 class="mb-0">{{ user_stats.attendance_rate }}%</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clipboard-check fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Welcome, {{ user.get_full_name|default:user.username }}!</h5>
+            </div>
+            <div class="card-body">
+                <p>Welcome to your School Management System dashboard. As a <strong>{{ user.get_user_type_display }}</strong>, you have access to various features based on your role.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h6>Quick Stats</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                User Type
+                                <span class="badge bg-primary">{{ user.get_user_type_display }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Email Verified
+                                <span class="badge {% if user.is_email_verified %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if user.is_email_verified %}Yes{% else %}No{% endif %}
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Phone Verified
+                                <span class="badge {% if user.is_phone_verified %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if user.is_phone_verified %}Yes{% else %}No{% endif %}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Quick Actions</h6>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                            <a href="#" class="btn btn-outline-success btn-sm">Update Information</a>
+                            <a href="{% url 'change_password' %}" class="btn btn-outline-info btn-sm">Change Password</a>
+                            <a href="{% url 'notifications' %}" class="btn btn-outline-warning btn-sm">View Notifications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Notifications</h5>
+            </div>
+            <div class="card-body">
+                {% for notification in recent_notifications %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <strong>{{ notification.title }}</strong>
+                    <p class="mb-1 small">{{ notification.message }}</p>
+                    <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center">No recent notifications</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">System Information</h5>
+            </div>
+            <div class="card-body">
+                <p class="small mb-2"><strong>Last Login:</strong> {{ user.last_login|date:"M d, Y H:i" }}</p>
+                <p class="small mb-2"><strong>Account Created:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                <p class="small mb-0"><strong>Status:</strong> 
+                    <span class="badge bg-success">Active</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

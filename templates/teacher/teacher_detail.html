@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষক বিবরণ</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'teacher_list' %}" class="btn btn-sm btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left"></i> ফিরে যান
+        </a>
+        <a href="{% url 'edit_teacher' teacher.id %}" class="btn btn-sm btn-warning me-2">
+            <i class="fas fa-edit"></i> সম্পাদনা
+        </a>
+        <a href="{% url 'delete_teacher' teacher.id %}" class="btn btn-sm btn-danger" onclick="return confirm('আপনি কি নিশ্চিত?')">
+            <i class="fas fa-trash"></i> মুছুন
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                {% if teacher.photo %}
+                <img src="{{ teacher.photo.url }}" alt="{{ teacher.name }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'images/default-teacher.png' %}" alt="Default" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+                <h4>{{ teacher.name }}</h4>
+                <p class="text-muted">{{ teacher.subject }}</p>
+                
+                {% if teacher.is_active %}
+                <span class="badge bg-success">সক্রিয়</span>
+                {% else %}
+                <span class="badge bg-danger">নিষ্ক্রিয়</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="card-title mb-0">যোগাযোগ তথ্য</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>ইমেইল:</strong> {{ teacher.email }}</p>
+                <p><strong>ফোন:</strong> {{ teacher.phone }}</p>
+                <p><strong>ঠিকানা:</strong> {{ teacher.address }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">পেশাগত তথ্য</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p><strong>শিক্ষাগত যোগ্যতা:</strong></p>
+                        <p>{{ teacher.qualification|linebreaks }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p><strong>অভিজ্ঞতা:</strong> {{ teacher.experience }} বছর</p>
+                        <p><strong>যোগদানের তারিখ:</strong> {{ teacher.joining_date }}</p>
+                        <p><strong>বেতন:</strong> ৳{{ teacher.salary }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="card-title mb-0">বর্তমান ক্লাসসমূহ</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ক্লাস</th>
+                                <th>বিষয়</th>
+                                <th>দিন</th>
+                                <th>সময়</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for class in teacher_classes %}
+                            <tr>
+                                <td>{{ class.class_name }}</td>
+                                <td>{{ class.subject }}</td>
+                                <td>{{ class.day }}</td>
+                                <td>{{ class.time }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">কোন ক্লাস বরাদ্দ নেই</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

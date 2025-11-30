@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থী প্রমোশন</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+            শিক্ষার্থী তালিকায় ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="current_grade" class="form-label">বর্তমান শ্রেণী</label>
+                        <select class="form-select" id="current_grade" name="current_grade" required>
+                            <option value="">-- শ্রেণী নির্বাচন করুন --</option>
+                            {% for grade in grades %}
+                            <option value="{{ grade }}">{{ grade }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="current_section" class="form-label">বর্তমান বিভাগ (ঐচ্ছিক)</label>
+                        <select class="form-select" id="current_section" name="current_section">
+                            <option value="">-- সকল বিভাগ --</option>
+                            {% for section in sections %}
+                            <option value="{{ section }}">{{ section }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="next_grade" class="form-label">পরবর্তী শ্রেণী</label>
+                        <select class="form-select" id="next_grade" name="next_grade" required>
+                            <option value="">-- শ্রেণী নির্বাচন করুন --</option>
+                            {% for grade in grades %}
+                            <option value="{{ grade }}">{{ grade }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="next_section" class="form-label">পরবর্তী বিভাগ</label>
+                        <select class="form-select" id="next_section" name="next_section" required>
+                            <option value="">-- বিভাগ নির্বাচন করুন --</option>
+                            {% for section in sections %}
+                            <option value="{{ section }}">{{ section }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="academic_year" class="form-label">পরবর্তী শিক্ষাবর্ষ</label>
+                <input type="text" class="form-control" id="academic_year" name="academic_year" required>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="update_roll_numbers" name="update_roll_numbers">
+                <label class="form-check-label" for="update_roll_numbers">
+                    রোল নম্বর পুনরায় সেট করুন
+                </label>
+            </div>
+
+            <div class="alert alert-warning" role="alert">
+                <h6 class="alert-heading">সতর্কতা!</h6>
+                <p class="mb-0">এই প্রক্রিয়াটি নির্বাচিত শিক্ষার্থীদের শ্রেণী ও বিভাগ পরিবর্তন করবে। এই কাজটি
+                    পূর্বাবস্থায় ফেরানো যাবে না।</p>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">প্রমোশন সম্পন্ন করুন</button>
+                <a href="{% url 'students:student_list' %}" class="btn btn-secondary">বাতিল করুন</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if students %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">প্রমোশনের জন্য নির্বাচিত শিক্ষার্থী</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>রোল নং</th>
+                        <th>নাম</th>
+                        <th>বর্তমান শ্রেণী</th>
+                        <th>বর্তমান বিভাগ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.first_name }} {{ student.last_name }}</td>
+                        <td>{{ student.grade }}</td>
+                        <td>{{ student.section }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

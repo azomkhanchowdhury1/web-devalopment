@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2><i class="fas fa-user-plus me-2"></i>Create Account</h2>
+            <p class="text-muted">Join our school management system</p>
+        </div>
+
+        <div class="auth-body">
+            <form method="post" enctype="multipart/form-data" id="registerForm">
+                {% csrf_token %}
+
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h5 class="section-title">Personal Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.date_of_birth|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.gender|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Information -->
+                <div class="form-section">
+                    <h5 class="section-title">Account Information</h5>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form.user_type|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.email|as_crispy_field }}
+                            <div class="form-text" id="email-availability"></div>
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.phone|as_crispy_field }}
+                            <div class="form-text" id="phone-availability"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="form-section">
+                    <h5 class="section-title">Security</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="form-section">
+                    <h5 class="section-title">Profile Picture</h5>
+                    {{ form.profile_picture|as_crispy_field }}
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="form-section">
+                    <div class="form-check">
+                        {{ form.agree_terms }}
+                        <label class="form-check-label" for="{{ form.agree_terms.id_for_label }}">
+                            I agree to the <a href="#" target="_blank">Terms and Conditions</a> and <a href="#"
+                                target="_blank">Privacy Policy</a>
+                        </label>
+                    </div>
+                    {% if form.agree_terms.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.agree_terms.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer text-center mt-4">
+                <p class="mb-0">Already have an account?
+                    <a href="{% url 'login' %}" class="text-decoration-none fw-semibold">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        overflow: hidden;
+    }
+
+    .auth-header {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .auth-header h2 {
+        margin-bottom: 0.5rem;
+        color: white;
+    }
+
+    .auth-body {
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .section-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .form-actions {
+        margin-top: 2rem;
+    }
+
+    .auth-footer {
+        border-top: 1px solid #e9ecef;
+        padding-top: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .auth-card {
+            margin: 10px;
+        }
+
+        .auth-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check email availability
+        const emailInput = document.getElementById('id_email');
+        if (emailInput) {
+            emailInput.addEventListener('blur', function () {
+                const email = this.value;
+                if (email.includes('@')) {
+                    checkAvailability('email', email, 'email-availability');
+                }
+            });
+        }
+
+        // Check phone availability
+        const phoneInput = document.getElementById('id_phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('blur', function () {
+                const phone = this.value;
+                if (phone.length >= 10) {
+                    checkAvailability('phone', phone, 'phone-availability');
+                }
+            });
+        }
+
+        function checkAvailability(type, value, elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<span class="text-warning">Checking availability...</span>';
+
+            fetch(`/accounts/ajax/check-${type}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ [type]: value })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        element.innerHTML = '<span class="text-success"><i class="fas fa-check"></i> Available</span>';
+                    } else {
+                        element.innerHTML = '<span class="text-danger"><i class="fas fa-times"></i> Already taken</span>';
+                    }
+                })
+                .catch(error => {
+                    element.innerHTML = '<span class="text-danger">Error checking availability</span>';
+                });
+        }
+
+        // Password strength indicator
+        const password1Input = document.getElementById('id_password1');
+        if (password1Input) {
+            password1Input.addEventListener('input', function () {
+                checkPasswordStrength(this.value);
+            });
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const feedback = document.getElementById('password-strength');
+
+            if (!feedback) return;
+
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+
+            const messages = [
+                'Very Weak',
+                'Weak',
+                'Fair',
+                'Good',
+                'Strong'
+            ];
+
+            const colors = [
+                'danger',
+                'danger',
+                'warning',
+                'info',
+                'success'
+            ];
+
+            feedback.innerHTML = `
+            <div class="progress mt-1" style="height: 5px;">
+                <div class="progress-bar bg-${colors[strength]}" style="width: ${(strength / 4) * 100}%"></div>
+            </div>
+            <small class="text-${colors[strength]}">${messages[strength]}</small>
+        `;
+        }
+    });
+</script>
+{% endblock %}

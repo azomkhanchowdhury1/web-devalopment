@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}উপস্থিতি তালিকা - School Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">উপস্থিতি তালিকা</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{% url 'attendance:take_attendance' %}" class="btn btn-sm btn-outline-primary">নতুন উপস্থিতি</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary">প্রিন্ট</button>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">ফিল্টার করুন</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="class" class="form-label">শ্রেণী</label>
+                <select class="form-select" id="class" name="class">
+                    <option value="">সব শ্রেণী</option>
+                    <option value="6">ষষ্ঠ শ্রেণী</option>
+                    <option value="7">সপ্তম শ্রেণী</option>
+                    <option value="8">অষ্টম শ্রেণী</option>
+                    <option value="9">নবম শ্রেণী</option>
+                    <option value="10">দশম শ্রেণী</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="section" class="form-label">শাখা</label>
+                <select class="form-select" id="section" name="section">
+                    <option value="">সব শাখা</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="date" class="form-label">তারিখ</label>
+                <input type="date" class="form-control" id="date" name="date">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                    <button type="submit" class="btn btn-primary">ফিল্টার করুন</button>
+                    <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">রিসেট</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">উপস্থিতি রেকর্ড</h5>
+        <span class="badge bg-primary">মোট: {{ attendances|length }} রেকর্ড</span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>তারিখ</th>
+                        <th>শ্রেণী</th>
+                        <th>শাখা</th>
+                        <th>বিষয়</th>
+                        <th>মোট শিক্ষার্থী</th>
+                        <th>উপস্থিত</th>
+                        <th>অনুপস্থিত</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attendance in attendances %}
+                    <tr>
+                        <td>{{ attendance.date }}</td>
+                        <td>{{ attendance.class_info.get_class_name_display }}</td>
+                        <td>{{ attendance.class_info.section }}</td>
+                        <td>{{ attendance.subject.get_name_display }}</td>
+                        <td>{{ attendance.total_students }}</td>
+                        <td><span class="badge bg-success">{{ attendance.present_count }}</span></td>
+                        <td><span class="badge bg-danger">{{ attendance.absent_count }}</span></td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'attendance:attendance_detail' attendance.id %}"
+                                    class="btn btn-sm btn-info text-white" title="বিস্তারিত">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'attendance:edit_attendance' attendance.id %}"
+                                    class="btn btn-sm btn-warning text-white" title="সম্পাদনা">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                            <p class="mb-0">কোন উপস্থিতির রেকর্ড পাওয়া যায়নি</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if attendances.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if attendances.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ attendances.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">পূর্ববর্তী</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">পূর্ববর্তী</span>
+                </li>
+                {% endif %}
+
+                {% for i in attendances.paginator.page_range %}
+                {% if attendances.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{
+                        i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if attendances.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ attendances.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">পরবর্তী</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">পরবর্তী</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

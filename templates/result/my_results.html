@@ -1,0 +1,368 @@
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Student Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <img src="{% if student.profile_picture %}{{ student.profile_picture.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                        alt="Profile Picture" class="rounded-circle" width="100" height="100">
+                </div>
+                <p><strong>Name:</strong> {{ student.name }}</p>
+                <p><strong>Roll No:</strong> {{ student.roll_number }}</p>
+                <p><strong>Class:</strong> {{ student.current_class.name }}</p>
+                <p><strong>Section:</strong> {{ student.section }}</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">Academic Summary</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Total Subjects:</strong> {{ total_subjects }}</p>
+                <p><strong>Average Percentage:</strong> {{ average_percentage|floatformat:2 }}%</p>
+                <p><strong>Overall Grade:</strong> {{ overall_grade }}</p>
+                <p><strong>Position in Class:</strong> {{ position_in_class }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Exam Results</h5>
+                <div>
+                    <select class="form-select form-select-sm" id="examFilter">
+                        <option value="all">All Exams</option>
+                        <option value="midterm">Midterm</option>
+                        <option value="final">Final</option>
+                        <option value="quiz">Quiz</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if results %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="resultsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Exam</th>
+                                <th>Subject</th>
+                                <th>Marks Obtained</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
+                                <th>Remarks</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr data-exam="{{ result.exam_type }}">
+                                <td>{{ result.get_exam_type_display }}</td>
+                                <td>{{ result.subject.name }}</td>
+                                <td>{{ result.marks_obtained }}</td>
+                                <td>{{ result.total_marks }}</td>
+                                <td>{{ result.percentage|floatformat:2 }}%</td>
+                                <td>
+                                    <span
+                                        class="badge {% if result.grade == 'A+' %}bg-success{% elif result.grade == 'F' %}bg-danger{% else %}bg-warning{% endif %}">
+                                        {{ result.grade }}
+                                    </span>
+                                </td>
+                                <td>{{ result.remarks|default:"-" }}</td>
+                                <td>{{ result.created_at|date:"d M Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <h5>Performance Chart</h5>
+                    <canvas id="performanceChart" height="100"></canvas>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No results found</h5>
+                    <p class="text-muted">Your results will appear here once they are published.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if final_results %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">Final Term Report Card</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-warning">
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Grade</th>
+                                <th>GPA</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in final_results %}
+                            <tr>
+                                <td>{{ result.subject.name }}</td>
+                                <td>{{ result.marks_obtained }}/{{ result.total_marks }}</td>
+                                <td>{{ result.grade }}</td>
+                                <td>{{ result.gpa }}</td>
+                                <td>{{ result.remarks|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="2"><strong>Total GPA:</strong></td>
+                                <td colspan="3"><strong>{{ total_gpa|floatformat:2 }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Exam filter functionality
+        const examFilter = document.getElementById('examFilter');
+        const resultsTable = document.getElementById('resultsTable');
+
+        if (examFilter && resultsTable) {
+            examFilter.addEventListener('change', function () {
+                const selectedExam = this.value;
+                const rows = resultsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                for (let row of rows) {
+                    if (selectedExam === 'all' || row.getAttribute('data-exam') === selectedExam) {
+</div >
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card shadow-sm mb-4">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5 class="card-title mb-0">Student Information</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="{% if student.profile_picture %}{{ student.profile_picture.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                                                    alt="Profile Picture" class="rounded-circle" width="100" height="100">
+                                            </div>
+                                            <p><strong>Name:</strong> {{ student.name }}</p>
+                                            <p><strong>Roll No:</strong> {{ student.roll_number }}</p>
+                                            <p><strong>Class:</strong> {{ student.current_class.name }}</p>
+                                            <p><strong>Section:</strong> {{ student.section }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-info text-white">
+                                            <h5 class="card-title mb-0">Academic Summary</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Total Subjects:</strong> {{ total_subjects }}</p>
+                                            <p><strong>Average Percentage:</strong> {{ average_percentage| floatformat:2 }}%</p>
+                                            <p><strong>Overall Grade:</strong> {{ overall_grade }}</p>
+                                            <p><strong>Position in Class:</strong> {{ position_in_class }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-9">
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title mb-0">Exam Results</h5>
+                                            <div>
+                                                <select class="form-select form-select-sm" id="examFilter">
+                                                    <option value="all">All Exams</option>
+                                                    <option value="midterm">Midterm</option>
+                                                    <option value="final">Final</option>
+                                                    <option value="quiz">Quiz</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if results %}
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover" id="resultsTable">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Exam</th>
+                                                            <th>Subject</th>
+                                                            <th>Marks Obtained</th>
+                                                            <th>Total Marks</th>
+                                                            <th>Percentage</th>
+                                                            <th>Grade</th>
+                                                            <th>Remarks</th>
+                                                            <th>Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for result in results %}
+                                                        <tr data-exam="{{ result.exam_type }}">
+                                                            <td>{{ result.get_exam_type_display }}</td>
+                                                            <td>{{ result.subject.name }}</td>
+                                                            <td>{{ result.marks_obtained }}</td>
+                                                            <td>{{ result.total_marks }}</td>
+                                                            <td>{{ result.percentage | floatformat:2 }}%</td>
+                                                            <td>
+                                                                <span
+                                                                    class="badge {% if result.grade == 'A+' %}bg-success{% elif result.grade == 'F' %}bg-danger{% else %}bg-warning{% endif %}">
+                                                                    {{ result.grade }}
+                                                                </span>
+                                                            </td>
+                                                            <td>{{ result.remarks |default: "-" }}</td>
+                                                            <td>{{ result.created_at | date:"d M Y" }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="mt-4">
+                                                <h5>Performance Chart</h5>
+                                                <canvas id="performanceChart" height="100"></canvas>
+                                            </div>
+                                            {% else %}
+                                            <div class="text-center py-4">
+                                                <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                                <h5 class="text-muted">No results found</h5>
+                                                <p class="text-muted">Your results will appear here once they are published.</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {% if final_results %}
+                                    <div class="card shadow-sm mt-4">
+                                        <div class="card-header bg-warning text-dark">
+                                            <h5 class="card-title mb-0">Final Term Report Card</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead class="table-warning">
+                                                        <tr>
+                                                            <th>Subject</th>
+                                                            <th>Marks</th>
+                                                            <th>Grade</th>
+                                                            <th>GPA</th>
+                                                            <th>Remarks</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for result in final_results %}
+                                                        <tr>
+                                                            <td>{{ result.subject.name }}</td>
+                                                            <td>{{ result.marks_obtained }}/{{ result.total_marks }}</td>
+                                                            <td>{{ result.grade }}</td>
+                                                            <td>{{ result.gpa }}</td>
+                                                            <td>{{ result.remarks |default: "-" }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                    <tfoot class="table-light">
+                                                        <tr>
+                                                            <td colspan="2"><strong>Total GPA:</strong></td>
+                                                            <td colspan="3"><strong>{{ total_gpa| floatformat:2 }}</strong></td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+</div >
+
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        // Exam filter functionality
+        const examFilter = document.getElementById('examFilter');
+        const resultsTable = document.getElementById('resultsTable');
+
+        if (examFilter && resultsTable) {
+            examFilter.addEventListener('change', function () {
+                const selectedExam = this.value;
+                const rows = resultsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                for (let row of rows) {
+                    if (selectedExam === 'all' || row.getAttribute('data-exam') === selectedExam) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Performance chart
+        const performanceChart = document.getElementById('performanceChart');
+        if (performanceChart) {
+            const ctx = performanceChart.getContext('2d');
+        const subjects = [
+        {% for result in results %}
+        '{{ result.subject.name | escapejs }}',
+        {% endfor %}
+        ];
+        const percentages = [
+        {% for result in results %}
+        {{ result.percentage | stringformat:".2f" }},
+        {% endfor %}
+        ];
+
+        new Chart(ctx, {
+            type: 'bar',
+        data: {
+            labels: subjects,
+        datasets: [{
+            label: 'Percentage',
+        data: percentages,
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+                    }]
+                },
+        options: {
+            scales: {
+            y: {
+            beginAtZero: true,
+        max: 100,
+        title: {
+            display: true,
+        text: 'Percentage (%)'
+                            }
+                        },
+        x: {
+            title: {
+            display: true,
+        text: 'Subjects'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">শিক্ষক পোর্টাল</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">প্রিন্ট</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            মোট ক্লাস
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_classes }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            মোট শিক্ষার্থী
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            আজকের ক্লাস
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ today_classes }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            অপেক্ষমান এসাইনমেন্ট
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_assignments }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">আজকের ক্লাস সিডিউল</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>সময়</th>
+                                <th>বিষয়</th>
+                                <th>ক্লাস</th>
+                                <th>রুম</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in today_schedule %}
+                            <tr>
+                                <td>{{ schedule.time }}</td>
+                                <td>{{ schedule.subject }}</td>
+                                <td>{{ schedule.class_name }}</td>
+                                <td>{{ schedule.room }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">আজকের জন্য কোন ক্লাস নেই</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">দ্রুত লিঙ্ক</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'attendance' %}" class="btn btn-primary btn-block">
+                            <i class="fas fa-clipboard-check"></i> উপস্থিতি নিন
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'assignment_list' %}" class="btn btn-success btn-block">
+                            <i class="fas fa-tasks"></i> এসাইনমেন্ট
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'student_list' %}" class="btn btn-info btn-block">
+                            <i class="fas fa-users"></i> শিক্ষার্থী তালিকা
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'result_upload' %}" class="btn btn-warning btn-block">
+                            <i class="fas fa-chart-bar"></i> ফলাফল আপলোড
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">সাম্প্রতিক নোটিশ</h6>
+                <a href="{% url 'notice_board' %}" class="btn btn-sm btn-outline-primary">সব দেখুন</a>
+            </div>
+            <div class="card-body">
+                {% for notice in recent_notices %}
+                <div class="mb-3 pb-3 border-bottom">
+                    <h6 class="font-weight-bold">{{ notice.title }}</h6>
+                    <p class="mb-1">{{ notice.content|truncatewords:20 }}</p>
+                    <small class="text-muted">{{ notice.date_posted|date:"d M Y" }}</small>
+                </div>
+                {% empty %}
+                <p class="text-center">কোন নোটিশ পাওয়া যায়নি</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

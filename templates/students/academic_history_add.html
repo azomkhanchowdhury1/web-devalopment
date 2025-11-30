@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">একাডেমিক ইতিহাস যোগ করুন</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_detail' student.id %}" class="btn btn-sm btn-outline-secondary">
+            শিক্ষার্থীর বিস্তারিত দেখুন
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-info mb-4" role="alert">
+            <h5 class="alert-heading">শিক্ষার্থী: {{ student.first_name }} {{ student.last_name }}</h5>
+            <p class="mb-0">রোল নং: {{ student.roll_number }} | শ্রেণী: {{ student.grade }}</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.academic_year.id_for_label }}" class="form-label">শিক্ষাবর্ষ</label>
+                        {{ form.academic_year }}
+                        {% if form.academic_year.errors %}
+                        <div class="text-danger">{{ form.academic_year.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.grade.id_for_label }}" class="form-label">শ্রেণী</label>
+                        {{ form.grade }}
+                        {% if form.grade.errors %}
+                        <div class="text-danger">{{ form.grade.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.section.id_for_label }}" class="form-label">বিভাগ</label>
+                        {{ form.section }}
+                        {% if form.section.errors %}
+                        <div class="text-danger">{{ form.section.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="{{ form.roll_number.id_for_label }}" class="form-label">রোল নং</label>
+                        {{ form.roll_number }}
+                        {% if form.roll_number.errors %}
+                        <div class="text-danger">{{ form.roll_number.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.result.id_for_label }}" class="form-label">ফলাফল</label>
+                        {{ form.result }}
+                        {% if form.result.errors %}
+                        <div class="text-danger">{{ form.result.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">অবস্থা</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                        <div class="text-danger">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.remarks.id_for_label }}" class="form-label">মন্তব্য</label>
+                {{ form.remarks }}
+                {% if form.remarks.errors %}
+                <div class="text-danger">{{ form.remarks.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">ইতিহাস সংরক্ষণ করুন</button>
+                <a href="{% url 'students:student_detail' student.id %}" class="btn btn-secondary">বাতিল করুন</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ফর্ম কন্ট্রোল ক্লাস যোগ করুন
+        const formControls = document.querySelectorAll('select, input[type="text"], input[type="number"], textarea');
+        formControls.forEach(control => {
+            control.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

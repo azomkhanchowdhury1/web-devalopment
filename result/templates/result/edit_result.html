@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">Edit Result</h2>
+        <a href="{% url 'results_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Results
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">Edit Result Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_student" class="form-label">Student</label>
+                                {{ form.student }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_exam_type" class="form-label">Exam Type</label>
+                                {{ form.exam_type }}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_student_class" class="form-label">Class</label>
+                                {{ form.student_class }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_subject" class="form-label">Subject</label>
+                                {{ form.subject }}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_marks_obtained" class="form-label">Marks Obtained</label>
+                                {{ form.marks_obtained }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_total_marks" class="form-label">Total Marks</label>
+                                {{ form.total_marks }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_remarks" class="form-label">Remarks</label>
+                            {{ form.remarks }}
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong>Current Grade:</strong> {{ result.grade }} | 
+                            <strong>GPA:</strong> {{ result.gpa }} | 
+                            <strong>Percentage:</strong> {{ result.percentage|floatformat:2 }}%
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'results_dashboard' %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-warning">Update Result</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

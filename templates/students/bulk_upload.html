@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থী বাল্ক আপলোড</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+            শিক্ষার্থী তালিকায় ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">এক্সেল ফাইল আপলোড</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="file" class="form-label">এক্সেল ফাইল নির্বাচন করুন</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls, .csv"
+                            required>
+                        <div class="form-text">সর্বোচ্চ ফাইলের আকার: 10MB। অনুমোদিত ফরম্যাট: XLSX, XLS, CSV</div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">আপলোড করুন</button>
+                        <a href="{% url 'students:student_list' %}" class="btn btn-secondary">বাতিল করুন</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">নির্দেশিকা</h5>
+            </div>
+            <div class="card-body">
+                <h6>ফাইল ফরম্যাট:</h6>
+                <ul class="small">
+                    <li>ফাইলটি এক্সেল (XLSX/XLS) বা CSV ফরম্যাটে হতে হবে</li>
+                    <li>প্রথম সারিতে কলামের হেডার থাকতে হবে</li>
+                    <li>নিম্নলিখিত কলামগুলি প্রয়োজন:</li>
+                </ul>
+
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>কলাম</th>
+                            <th>বর্ণনা</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>first_name</td>
+                            <td>প্রথম নাম (আবশ্যক)</td>
+                        </tr>
+                        <tr>
+                            <td>last_name</td>
+                            <td>শেষ নাম (আবশ্যক)</td>
+                        </tr>
+                        <tr>
+                            <td>roll_number</td>
+                            <td>রোল নং (আবশ্যক)</td>
+                        </tr>
+                        <tr>
+                            <td>grade</td>
+                            <td>শ্রেণী (আবশ্যক)</td>
+                        </tr>
+                        <tr>
+                            <td>section</td>
+                            <td>বিভাগ</td>
+                        </tr>
+                        <tr>
+                            <td>date_of_birth</td>
+                            <td>জন্ম তারিখ (YYYY-MM-DD)</td>
+                        </tr>
+                        <tr>
+                            <td>gender</td>
+                            <td>লিঙ্গ (Male/Female/Other)</td>
+                        </tr>
+                        <tr>
+                            <td>phone</td>
+                            <td>ফোন নম্বর</td>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td>ইমেইল ঠিকানা</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mt-3">
+                    <a href="{% static 'samples/student_upload_template.xlsx' %}"
+                        class="btn btn-sm btn-outline-primary">
+                        টেমপ্লেট ডাউনলোড করুন
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if upload_result %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">আপলোড ফলাফল</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-{% if upload_result.errors %}warning{% else %}success{% endif %}" role="alert">
+            <h6 class="alert-heading">
+                {% if upload_result.errors %}
+                আপলোড সম্পন্ন হয়েছে কিছু ত্রুটি সহ
+                {% else %}
+                আপলোড সফলভাবে সম্পন্ন হয়েছে
+                {% endif %}
+            </h6>
+            <p class="mb-0">
+                সফলভাবে যোগ করা হয়েছে: {{ upload_result.success_count }} শিক্ষার্থী
+                {% if upload_result.errors %}
+                <br>ত্রুটি সহ: {{ upload_result.errors|length }} সারি
+                {% endif %}
+            </p>
+        </div>
+
+        {% if upload_result.errors %}
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>সারি নং</th>
+                        <th>ত্রুটি</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for error in upload_result.errors %}
+                    <tr>
+                        <td>{{ error.row }}</td>
+                        <td class="text-danger">{{ error.message }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

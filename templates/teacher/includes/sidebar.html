@@ -1,0 +1,62 @@
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link active" href="{% url 'teacher_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i>
+            ড্যাশবোর্ড
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'teacher_portal' %}">
+            <i class="fas fa-chalkboard-teacher"></i>
+            শিক্ষক পোর্টাল
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'teacher_list' %}">
+            <i class="fas fa-users"></i>
+            শিক্ষক তালিকা
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'students:student_list' %}">
+            <i class="fas fa-user-graduate"></i>
+            শিক্ষার্থী তালিকা
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'academic:class_list' %}">
+            <i class="fas fa-school"></i>
+            ক্লাস ব্যবস্থাপনা
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'attendance_list' %}">
+            <i class="fas fa-clipboard-check"></i>
+            উপস্থিতি
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'assignment_list' %}">
+            <i class="fas fa-tasks"></i>
+            এসাইনমেন্ট
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'result_list' %}">
+            <i class="fas fa-chart-bar"></i>
+            ফলাফল
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'notice_list' %}">
+            <i class="fas fa-bullhorn"></i>
+            নোটিশ বোর্ড
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'edit_teacher_profile' %}">
+            <i class="fas fa-cogs"></i>
+            সেটিংস
+        </a>
+    </li>
+</ul>

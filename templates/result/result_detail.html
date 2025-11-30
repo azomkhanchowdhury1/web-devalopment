@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">Result Details</h2>
+        <div>
+            <a href="{% url 'results_dashboard' %}" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-arrow-left"></i> Back to Results
+            </a>
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> Print
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="card-title mb-0">OFFICIAL REPORT CARD</h4>
+                    <p class="mb-0">{{ school_name }}</p>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-sm-4"><strong>Student Name:</strong></div>
+                                <div class="col-sm-8">{{ result.student.name }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><strong>Roll Number:</strong></div>
+                                <div class="col-sm-8">{{ result.student.roll_number }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><strong>Class:</strong></div>
+                                <div class="col-sm-8">{{ result.student_class.name }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><strong>Section:</strong></div>
+                                <div class="col-sm-8">{{ result.student.section }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <img src="{% if result.student.profile_picture %}{{ result.student.profile_picture.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                                 alt="Profile Picture" class="rounded" width="100" height="100">
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-sm-5"><strong>Exam Type:</strong></div>
+                                <div class="col-sm-7">{{ result.get_exam_type_display }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"><strong>Subject:</strong></div>
+                                <div class="col-sm-7">{{ result.subject.name }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-sm-5"><strong>Academic Year:</strong></div>
+                                <div class="col-sm-7">{{ academic_year }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"><strong>Result Date:</strong></div>
+                                <div class="col-sm-7">{{ result.created_at|date:"d F Y" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Marks Obtained</th>
+                                    <th>Total Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                    <th>GPA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ result.marks_obtained }}</td>
+                                    <td>{{ result.total_marks }}</td>
+                                    <td>{{ result.percentage|floatformat:2 }}%</td>
+                                    <td>
+                                        <span class="badge {% if result.grade == 'A+' %}bg-success{% elif result.grade == 'F' %}bg-danger{% else %}bg-warning{% endif %}">
+                                            {{ result.grade }}
+                                        </span>
+                                    </td>
+                                    <td>{{ result.gpa }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>Remarks</h5>
+                        <div class="border p-3 rounded">
+                            {{ result.remarks|default:"No remarks provided." }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <p class="border-top pt-2">Class Teacher</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <p class="border-top pt-2">Principal</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <p class="border-top pt-2">Parent/Guardian</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Student Performance History</h5>
+                </div>
+                <div class="card-body">
+                    {% if performance_history %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Exam</th>
+                                    <th>Subject</th>
+                                    <th>Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for history in performance_history %}
+                                <tr>
+                                    <td>{{ history.get_exam_type_display }}</td>
+                                    <td>{{ history.subject.name }}</td>
+                                    <td>{{ history.marks_obtained }}/{{ history.total_marks }}</td>
+                                    <td>{{ history.percentage|floatformat:2 }}%</td>
+                                    <td>{{ history.grade }}</td>
+                                    <td>{{ history.created_at|date:"d M Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No performance history available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .btn, .card-header .d-flex {
+            display: none !important;
+        }
+        
+        .card {
+            border: 1px solid #000 !important;
+        }
+        
+        .card-header {
+            background-color: #f8f9fa !important;
+            color: #000 !important;
+            border-bottom: 1px solid #000 !important;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">Results Dashboard</h2>
+        <a href="{% url 'enter_result' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Result
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Results</div>
+                            <div class="h5 mb-0">{{ total_results }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Average Percentage</div>
+                            <div class="h5 mb-0">{{ average_percentage|floatformat:2 }}%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Top Grade (A+)</div>
+                            <div class="h5 mb-0">{{ top_grade_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-star fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Failed (F)</div>
+                            <div class="h5 mb-0">{{ failed_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">All Results</h5>
+            <div class="d-flex">
+                <select class="form-select me-2" id="classFilter">
+                    <option value="">All Classes</option>
+                    {% for class in classes %}
+                    <option value="{{ class.id }}">{{ class.name }}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-select me-2" id="examFilter">
+                    <option value="">All Exams</option>
+                    <option value="midterm">Midterm</option>
+                    <option value="final">Final</option>
+                    <option value="quiz">Quiz</option>
+                </select>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="resultsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll No</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Exam</th>
+                            <th>Marks</th>
+                            <th>Percentage</th>
+                            <th>Grade</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr data-class="{{ result.student_class.id }}" data-exam="{{ result.exam_type }}">
+                            <td>{{ result.student.name }}</td>
+                            <td>{{ result.student.roll_number }}</td>
+                            <td>{{ result.student_class.name }}</td>
+                            <td>{{ result.subject.name }}</td>
+                            <td>{{ result.get_exam_type_display }}</td>
+                            <td>{{ result.marks_obtained }}/{{ result.total_marks }}</td>
+                            <td>{{ result.percentage|floatformat:2 }}%</td>
+                            <td>
+                                <span class="badge {% if result.grade == 'A+' %}bg-success{% elif result.grade == 'F' %}bg-danger{% else %}bg-warning{% endif %}">
+                                    {{ result.grade }}
+                                </span>
+                            </td>
+                            <td>{{ result.created_at|date:"d M Y" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'result_detail' result.id %}" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'edit_result' result.id %}" class="btn btn-outline-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ result.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal{{ result.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this result?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <a href="{% url 'delete_result' result.id %}" class="btn btn-danger">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center py-4">
+                                <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No results found</h5>
+                                <p class="text-muted">Add your first result to get started.</p>
+                                <a href="{% url 'enter_result' %}" class="btn btn-primary">Add Result</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if results.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if results.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ results.previous_page_number }}">Previous</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in results.paginator.page_range %}
+                    {% if results.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if results.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ results.next_page_number }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const classFilter = document.getElementById('classFilter');
+        const examFilter = document.getElementById('examFilter');
+        const searchInput = document.getElementById('searchInput');
+        const resultsTable = document.getElementById('resultsTable');
+        
+        function filterResults() {
+            const selectedClass = classFilter.value;
+            const selectedExam = examFilter.value;
+            const searchText = searchInput.value.toLowerCase();
+            const rows = resultsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const classMatch = selectedClass === '' || row.getAttribute('data-class') === selectedClass;
+                const examMatch = selectedExam === '' || row.getAttribute('data-exam') === selectedExam;
+                const textMatch = row.textContent.toLowerCase().includes(searchText);
+                
+                if (classMatch && examMatch && textMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+        
+        if (classFilter) classFilter.addEventListener('change', filterResults);
+        if (examFilter) examFilter.addEventListener('change', filterResults);
+        if (searchInput) searchInput.addEventListener('input', filterResults);
+    });
+</script>
+{% endblock %}

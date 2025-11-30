@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থীর বিস্তারিত তথ্য</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'students:student_edit' student.id %}" class="btn btn-sm btn-outline-primary me-2">
+            সম্পাদনা
+        </a>
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+            তালিকায় ফিরে যান
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">ব্যক্তিগত তথ্য</h5>
+            </div>
+            <div class="card-body text-center">
+                {% if student.photo %}
+                <img src="{{ student.photo.url }}" alt="{{ student.first_name }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                    <span class="text-muted">ছবি নেই</span>
+                </div>
+                {% endif %}
+                
+                <h4>{{ student.first_name }} {{ student.last_name }}</h4>
+                <p class="text-muted">রোল নং: {{ student.roll_number }}</p>
+                
+                <div class="d-grid gap-2">
+                    <span class="badge {% if student.status == 'Active' %}bg-success{% else %}bg-warning{% endif %} mb-2">
+                        {{ student.status }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">শিক্ষাগত তথ্য</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>শ্রেণী:</strong> {{ student.grade }}</p>
+                                <p><strong>বিভাগ:</strong> {{ student.section }}</p>
+                                <p><strong>ভর্তির তারিখ:</strong> {{ student.admission_date }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>জন্ম তারিখ:</strong> {{ student.date_of_birth }}</p>
+                                <p><strong>লিঙ্গ:</strong> {{ student.gender }}</p>
+                                <p><strong>রক্তের গ্রুপ:</strong> {{ student.blood_group }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">যোগাযোগের তথ্য</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>ঠিকানা:</strong> {{ student.address }}</p>
+                                <p><strong>ফোন:</strong> {{ student.phone }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>ইমেইল:</strong> {{ student.email }}</p>
+                                <p><strong>জেলা:</strong> {{ student.district }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">অভিভাবকের তথ্য</h5>
+                        <a href="{% url 'students:guardian_edit' student.id %}" class="btn btn-sm btn-outline-primary">সম্পাদনা</a>
+                    </div>
+                    <div class="card-body">
+                        {% if student.guardian %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>নাম:</strong> {{ student.guardian.name }}</p>
+                                <p><strong>সম্পর্ক:</strong> {{ student.guardian.relation }}</p>
+                                <p><strong>পেশা:</strong> {{ student.guardian.occupation }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>ফোন:</strong> {{ student.guardian.phone }}</p>
+                                <p><strong>ইমেইল:</strong> {{ student.guardian.email }}</p>
+                                <p><strong>ঠিকানা:</strong> {{ student.guardian.address }}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-muted">কোন অভিভাবকের তথ্য পাওয়া যায়নি</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

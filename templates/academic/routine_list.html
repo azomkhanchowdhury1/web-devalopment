@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Class Routines</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{% url 'academic:routine_create' %}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-plus-circle"></i> Add New Routine
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <select class="form-select" id="classFilter">
+            <option value="">All Classes</option>
+            {% for class in classes %}
+            <option value="{{ class.id }}">{{ class.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Class</th>
+                <th>Day</th>
+                <th>Period</th>
+                <th>Subject</th>
+                <th>Teacher</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for routine in routines %}
+            <tr>
+                <td>{{ routine.class_obj.name }}</td>
+                <td>{{ routine.get_day_display }}</td>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('classFilter').addEventListener('change', function () {
+        const classId = this.value;
+        // Implement filtering logic here
+        console.log('Filter by class:', classId);
+    });
+</script>
+{% endblock %}

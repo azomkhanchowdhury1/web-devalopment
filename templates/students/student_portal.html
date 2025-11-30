@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">শিক্ষার্থী পোর্টাল</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <span class="navbar-text me-3">
+            রোল: {{ student.roll_number }} | শ্রেণী: {{ student.grade }}{% if student.section %} ({{ student.section }}){% endif %}
+        </span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                {% if student.photo %}
+                <img src="{{ student.photo.url }}" alt="{{ student.first_name }}" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                    <span class="text-muted">ছবি নেই</span>
+                </div>
+                {% endif %}
+                <h5>{{ student.first_name }} {{ student.last_name }}</h5>
+                <p class="text-muted">{{ student.roll_number }}</p>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">দ্রুত লিঙ্ক</h6>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#profile" class="list-group-item list-group-item-action">প্রোফাইল</a>
+                <a href="#academic" class="list-group-item list-group-item-action">একাডেমিক তথ্য</a>
+                <a href="#attendance" class="list-group-item list-group-item-action">উপস্থিতি</a>
+                <a href="#results" class="list-group-item list-group-item-action">ফলাফল</a>
+                <a href="#fees" class="list-group-item list-group-item-action">ফি তথ্য</a>
+                <a href="#documents" class="list-group-item list-group-item-action">নথিপত্র</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div id="profile" class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">ব্যক্তিগত তথ্য</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>জন্ম তারিখ:</strong> {{ student.date_of_birth }}</p>
+                        <p><strong>লিঙ্গ:</strong> {{ student.gender }}</p>
+                        <p><strong>রক্তের গ্রুপ:</strong> {{ student.blood_group }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>ফোন:</strong> {{ student.phone }}</p>
+                        <p><strong>ইমেইল:</strong> {{ student.email }}</p>
+                        <p><strong>ঠিকানা:</strong> {{ student.address }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="academic" class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">একাডেমিক তথ্য</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>শ্রেণী:</strong> {{ student.grade }}</p>
+                        <p><strong>বিভাগ:</strong> {{ student.section }}</p>
+                        <p><strong>ভর্তির তারিখ:</strong> {{ student.admission_date }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>অবস্থা:</strong> 
+                            <span class="badge {% if student.status == 'Active' %}bg-success{% else %}bg-warning{% endif %}">
+                                {{ student.status }}
+                            </span>
+                        </p>
+                        <p><strong>বর্তমান শিক্ষাবর্ষ:</strong> {{ current_academic_year }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="attendance" class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">উপস্থিতি সারাংশ</h5>
+                <small>{{ current_month }} {{ current_year }}</small>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h4>{{ attendance_summary.present }}</h4>
+                                <p>উপস্থিত</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body">
+                                <h4>{{ attendance_summary.absent }}</h4>
+                                <p>অনুপস্থিত</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h4>{{ attendance_summary.late }}</h4>
+                                <p>দেরী</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h4>{{ attendance_summary.percentage|floatformat:1 }}%</h4>
+                                <p>উপস্থিতির হার</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results" class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">সাম্প্রতিক ফলাফল</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_results %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>পরীক্ষা</th>
+                                <th>বিষয়</th>
+                                <th>প্রাপ্ত নম্বর</th>
+                                <th>মোট নম্বর</th>
+                                <th>গ্রেড</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in recent_results %}
+                            <tr>
+                                <td>{{ result.exam }}</td>
+                                <td>{{ result.subject }}</td>
+                                <td>{{ result.marks_obtained }}</td>
+                                <td>{{ result.total_marks }}</td>
+                                <td>
+                                    <span class="badge bg-{% if result.grade == 'A+' %}success{% elif result.grade == 'F' %}danger{% else %}warning{% endif %}">
+                                        {{ result.grade }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">কোন ফলাফল পাওয়া যায়নি</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div id="fees" class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">ফি তথ্য</h5>
+            </div>
+            <div class="card-body">
+                {% if fee_details %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>মাস</th>
+                                <th>বছর</th>
+                                <th>ফির পরিমাণ</th>
+                                <th>পরিশোধিত</th>
+                                <th>বাকি</th>
+                                <th>অবস্থা</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fee in fee_details %}
+                            <tr>
+                                <td>{{ fee.month }}</td>
+                                <td>{{ fee.year }}</td>
+                                <td>{{ fee.amount }} টাকা</td>
+                                <td>{{ fee.paid }} টাকা</td>
+                                <td>{{ fee.due }} টাকা</td>
+                                <td>
+                                    <span class="badge {% if fee.status == 'Paid' %}bg-success{% elif fee.status == 'Partial' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ fee.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">কোন ফি তথ্য পাওয়া যায়নি</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div id="documents" class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">নথিপত্র</h5>
+            </div>
+            <div class="card-body">
+                {% if documents %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>নথির ধরন</th>
+                                <th>শিরোনাম</th>
+                                <th>ইস্যুর তারিখ</th>
+                                <th>কার্যক্রম</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for document in documents %}
+                            <tr>
+                                <td>{{ document.document_type }}</td>
+                                <td>{{ document.title }}</td>
+                                <td>{{ document.issue_date }}</td>
+                                <td>
+                                    <a href="{{ document.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">ডাউনলোড</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">কোন নথিপত্র পাওয়া যায়নি</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
