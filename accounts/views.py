@@ -348,7 +348,7 @@ def send_welcome_email(user):
         message,
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 def send_password_reset_email(user, reset_token):
@@ -373,7 +373,7 @@ def send_password_reset_email(user, reset_token):
         message,
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 def send_sms_otp(phone_number, otp_code):
@@ -411,7 +411,7 @@ def send_2fa_setup_otp(user, otp_code):
         message,
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
 @login_required
